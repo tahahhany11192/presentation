@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crowdsourced Cyber Threat Intelligence with Blockchain</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2A6FFF;
+            --secondary: #00D4AA;
+            --accent: #FF6B6B;
+            --dark: #0F172A;
+            --darker: #0A0F1C;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --gold: #FFD166;
+            --purple: #9D4EDD;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            line-height: 1.6;
+            color: var(--light);
+            background: var(--dark);
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+        }
+
+        section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            scroll-snap-align: start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            max-width: 1200px;
+            width: 90%;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1, h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 3.2em;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            bottom: -10px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        h2 {
+            font-size: 2.8em;
+            color: var(--light);
+        }
+
+        h3 {
+            font-size: 1.8em;
+            color: var(--secondary);
+            margin: 20px 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            color: var(--light);
+        }
+
+        ul, ol {
+            list-style: none;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        li {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            color: var(--light);
+        }
+
+        li:hover {
+            transform: translateX(10px);
+            border-left-color: var(--primary);
+            background: rgba(42, 111, 255, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        th {
+            background: linear-gradient(90deg, var(--primary), var(--purple));
+            color: white;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .code-box {
+            background: #1a1a2e;
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            text-align: left;
+            margin: 25px auto;
+            max-width: 450px;
+            color: var(--secondary);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .code-box:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .diagram {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--purple));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px 0;
+            font-size: 1.3em;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            color: white;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .nav-dots {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--gold);
+            transform: scale(1.3);
+            box-shadow: 0 0 15px var(--gold);
+        }
+
+        /* Progress Bar */
+        .progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--purple));
+            width: 0%;
+            transition: width 0.4s;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+            }
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            .nav, .nav-dots { display: none; }
+        }
+
+        /* Custom slide backgrounds */
+        #slide1 { background: linear-gradient(135deg, var(--darker) 0%, #1E3A8A 100%); }
+        #slide2 { background: linear-gradient(135deg, #1E3A8A 0%, var(--dark) 100%); }
+        #problem { background: linear-gradient(135deg, #7C2D12 0%, #DC2626 100%); }
+        #slide4 { background: linear-gradient(135deg, #065F46 0%, var(--dark) 100%); }
+        #slide5 { background: linear-gradient(135deg, #3730A3 0%, var(--dark) 100%); }
+        #slide6 { background: linear-gradient(135deg, var(--dark) 0%, #1E3A8A 100%); }
+        #slide7 { background: linear-gradient(135deg, #1E3A8A 0%, #3730A3 100%); }
+        #slide8 { background: linear-gradient(135deg, #3730A3 0%, var(--dark) 100%); }
+        #slide9 { background: linear-gradient(135deg, var(--dark) 0%, #065F46 100%); }
+        #benefits { background: linear-gradient(135deg, #065F46 0%, #047857 100%); }
+        #slide11 { background: linear-gradient(135deg, #7C2D12 0%, var(--dark) 100%); }
+        #slide12 { background: linear-gradient(135deg, var(--dark) 0%, #3730A3 100%); }
+        #slide13 { background: linear-gradient(135deg, #3730A3 0%, #1E3A8A 100%); }
+        #slide14 { background: linear-gradient(135deg, #1E3A8A 0%, var(--darker) 100%); }
+
+        /* Icon animations */
+        .icon-animate {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .icon-animate:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .float {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(0, 15px); }
+            100% { transform: translate(0, -0px); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="nav-dots" id="navDots"></div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav">
+        <button class="nav-btn" id="prevBtn"><i class="fas fa-chevron-up"></i></button>
+        <button class="nav-btn" id="nextBtn"><i class="fas fa-chevron-down"></i></button>
+    </div>
+
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <!-- Slide 1: Title -->
+    <section id="slide1">
+        <div class="slide" data-aos="zoom-in">
+            <h1>Crowdsourced Cyber Threat Intelligence with Blockchain</h1>
+            <h2>A Decentralized Platform for Secure, Anonymous Sharing of Indicators of Compromise (IoCs)</h2>
+            <p>Presented by Taha hany, tony, maram, ali, toka, mahmoud<br>
+            Cybersecurity Department<br>
+            October 2023</p>
+            <i class="fas fa-lock icon-animate float" style="font-size: 4em; color: var(--gold); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- Slide 2: Agenda -->
+    <section id="slide2">
+        <div class="slide" data-aos="fade-up">
+            <h2>Presentation Overview</h2>
+            <ol>
+                <li data-aos="fade-right" data-aos-delay="100">Problem Statement</li>
+                <li data-aos="fade-right" data-aos-delay="200">Project Idea</li>
+                <li data-aos="fade-right" data-aos-delay="300">System Overview</li>
+                <li data-aos="fade-right" data-aos-delay="400">Technologies Used</li>
+                <li data-aos="fade-right" data-aos-delay="500">How It Works</li>
+                <li data-aos="fade-right" data-aos-delay="600">Benefits and Impact</li>
+                <li data-aos="fade-right" data-aos-delay="700">Example Use Case</li>
+                <li data-aos="fade-right" data-aos-delay="800">Novelty and Research Contribution</li>
+                <li data-aos="fade-right" data-aos-delay="900">Summary and Q&A</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Slide 3: Problem Statement -->
+    <section id="problem">
+        <div class="slide" data-aos="zoom-in">
+            <h2>The Challenge in Cybersecurity</h2>
+            <ul>
+                <li data-aos="slide-up">Cyberattacks are preventable with shared intelligence, but IoCs (e.g., malicious IPs, URLs) remain isolated.</li>
+                <li data-aos="slide-up" data-aos-delay="200">Key Barriers:
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Lack of trust between organizations.</li>
+                        <li>Data privacy and reputation concerns.</li>
+                        <li>Risk of tampering or misuse of shared data.</li>
+                    </ul>
+                </li>
+                <li data-aos="slide-up" data-aos-delay="400">Result: Fragmented global defense against evolving threats.</li>
+            </ul>
+            <div class="diagram" data-aos="fade-left">Isolated Silos → Broken Chain</div>
+        </div>
+    </section>
+
+    <!-- Slide 4: Project Idea -->
+    <section id="slide4">
+        <div class="slide" data-aos="fade-up">
+            <h2>Proposed Solution</h2>
+            <ul>
+                <li data-aos="fade-right">A decentralized blockchain-based platform for crowdsourced cyber threat intelligence.</li>
+                <li data-aos="fade-right" data-aos-delay="200">Key Features:
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Anonymous sharing of IoCs (IPs, hashes, domains, etc.).</li>
+                        <li>Verify authenticity and integrity via smart contracts.</li>
+                        <li>Trustless environment—no central authority needed.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="diagram" data-aos="zoom-in">Users → Platform → Blockchain</div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Blockchain Layer -->
+    <section id="slide5">
+        <div class="slide" data-aos="fade-up">
+            <h2>System Architecture: Blockchain Layer</h2>
+            <ul>
+                <li data-aos="slide-up">Core: Smart contracts on Ethereum (or similar) for immutable storage.</li>
+                <li data-aos="slide-up" data-aos-delay="200">Functions:
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Store IoCs permanently (no edits/deletes).</li>
+                        <li>Prevent duplicates and track submissions (anonymous via addresses).</li>
+                        <li>Enable public retrieval and verification.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="code-box" data-aos="fade-left">
+                {<br>
+                &nbsp;&nbsp;"type": "IP",<br>
+                &nbsp;&nbsp;"value": "185.22.33.45",<br>
+                &nbsp;&nbsp;"threatLevel": "High",<br>
+                &nbsp;&nbsp;"timestamp": "2025-10-07T14:00:00Z"<br>
+                }
+            </div>
+            <i class="fas fa-cube icon-animate pulse" style="font-size: 3em; color: var(--secondary);"></i>
+        </div>
+    </section>
+
+    <!-- Slide 6: Backend & Frontend -->
+    <section id="slide6">
+        <div class="slide" data-aos="fade-up">
+            <h2>System Architecture: Backend & Frontend</h2>
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px; margin: 10px;" data-aos="fade-right">
+                    <h3>Backend (Node.js + Express.js)</h3>
+                    <ul>
+                        <li>User authentication (wallets/keys).</li>
+                        <li>Blockchain interaction via Web3.js/Ethers.js.</li>
+                        <li>Validate and submit IoCs.</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 300px; margin: 10px;" data-aos="fade-left">
+                    <h3>Frontend (React.js or HTML/JS)</h3>
+                    <ul>
+                        <li>Intuitive UI for submitting, browsing, and searching threats.</li>
+                        <li>Verify via transaction IDs.</li>
+                        <li>Promotes community-driven sharing.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="diagram" data-aos="zoom-in">Frontend → Backend → Blockchain</div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Security Features -->
+    <section id="slide7">
+        <div class="slide" data-aos="fade-up">
+            <h2>Ensuring Security and Privacy</h2>
+            <ul>
+                <li data-aos="slide-up"><i class="fas fa-user-secret" style="color: var(--gold);"></i> Unique blockchain addresses (no real identities).</li>
+                <li data-aos="slide-up" data-aos-delay="200"><i class="fas fa-signature" style="color: var(--gold);"></i> Digital signatures for IoC integrity.</li>
+                <li data-aos="slide-up" data-aos-delay="400"><i class="fas fa-eye" style="color: var(--gold);"></i> Publicly verifiable but source-anonymous data.</li>
+                <li data-aos="slide-up" data-aos-delay="600"><i class="fas fa-robot" style="color: var(--gold);"></i> Smart contracts automate tamper-proof logic.</li>
+            </ul>
+            <i class="fas fa-shield-alt icon-animate float" style="font-size: 4em; color: var(--secondary); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- Slide 8: Technologies -->
+    <section id="slide8">
+        <div class="slide" data-aos="fade-up">
+            <h2>Technology Stack</h2>
+            <table data-aos="zoom-in">
+                <thead>
+                    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Blockchain</td><td>Ethereum (Solidity)</td><td>Smart Contract Deployment</td></tr>
+                    <tr><td>Backend</td><td>Node.js + Express.js</td><td>API & Blockchain Interaction</td></tr>
+                    <tr><td>Frontend</td><td>React.js / HTML, CSS, JS</td><td>User Interface</td></tr>
+                    <tr><td>Database (Opt.)</td><td>MongoDB / IPFS</td><td>Temporary/Decentralized Storage</td></tr>
+                    <tr><td>Integration</td><td>Web3.js / Ethers.js</td><td>Backend-Blockchain Connection</td></tr>
+                </tbody>
+            </table>
+            <i class="fas fa-tools icon-animate pulse" style="font-size: 3em; color: var(--gold); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- Slide 9: How It Works -->
+    <section id="slide9">
+        <div class="slide" data-aos="fade-up">
+            <h2>Step-by-Step Workflow</h2>
+            <ol style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <li data-aos="slide-up" data-aos-delay="100">1. Analyst discovers IoC (e.g., malicious IP).</li>
+                <li data-aos="slide-up" data-aos-delay="200">2. Logs in via blockchain wallet.</li>
+                <li data-aos="slide-up" data-aos-delay="300">3. Submits via frontend form.</li>
+                <li data-aos="slide-up" data-aos-delay="400">4. Backend validates and sends to smart contract.</li>
+                <li data-aos="slide-up" data-aos-delay="500">5. Blockchain records IoC immutably.</li>
+                <li data-aos="slide-up" data-aos-delay="600">6. Others view/verify the data.</li>
+            </ol>
+            <div class="diagram" data-aos="zoom-in">User Input → Validation → Immutable Storage → Global Access</div>
+            <i class="fas fa-cogs icon-animate float" style="font-size: 3em; color: var(--secondary); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- Slide 10: Benefits and Impact -->
+    <section id="benefits">
+        <div class="slide" data-aos="zoom-in">
+            <h2>Key Benefits</h2>
+            <table data-aos="fade-up">
+                <thead>
+                    <tr><th>Feature</th><th>Benefit</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Decentralization</td><td>No single point of manipulation</td></tr>
+                    <tr><td>Transparency</td><td>Traceable and verifiable IoCs</td></tr>
+                    <tr><td>Anonymity</td><td>Protected contributors</td></tr>
+                    <tr><td>Integrity</td><td>Immutable post-submission data</td></tr>
+                    <tr><td>Global Collaboration</td><td>Unified worldwide threat defense</td></tr>
+                </tbody>
+            </table>
+            <div class="diagram" data-aos="fade-left">Impact: Reduced Attack Success Rates</div>
+        </div>
+    </section>
+
+    <!-- Slide 11: Example Use Case -->
+    <section id="slide11">
+        <div class="slide" data-aos="fade-up">
+            <h2>Real-World Application</h2>
+            <ul>
+                <li data-aos="slide-up">Scenario: Firm detects phishing domain.</li>
+                <li data-aos="slide-up" data-aos-delay="200">Action: Upload IoC (domain + details) anonymously.</li>
+                <li data-aos="slide-up" data-aos-delay="400">Blockchain: Stores immutably via smart contract.</li>
+                <li data-aos="slide-up" data-aos-delay="600">Outcome: Other orgs block it proactively, preventing attacks.</li>
+                <li data-aos="slide-up" data-aos-delay="800">Transforms siloed efforts into a collaborative ecosystem.</li>
+            </ul>
+            <div class="diagram" data-aos="zoom-in">Phishing Detected → Shared → Blocked Globally</div>
+            <i class="fas fa-globe icon-animate float" style="font-size: 4em; color: var(--gold); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- Slide 12: Novelty and Research Contribution -->
+    <section id="slide12">
+        <div class="slide" data-aos="fade-up">
+            <h2>Innovation and Value</h2>
+            <ul>
+                <li data-aos="fade-right">Trustless sharing without central servers.</li>
+                <li data-aos="fade-right" data-aos-delay="200">Blockchain for guaranteed authenticity via consensus.</li>
+                <li data-aos="fade-right" data-aos-delay="400">Anonymized global collaboration.</li>
+                <li data-aos="fade-right" data-aos-delay="600">Broader Impact: Unified cybersecurity defense; potential for research publications.</li>
+            </ul>
+            <div class="diagram" data-aos="fade-left">New Era: Trustless + Collaborative Security</div>
+            <i class="fas fa-lightbulb icon-animate pulse" style="font-size: 4em; color: var(--gold); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- Slide 13: Summary -->
+    <section id="slide13">
+        <div class="slide" data-aos="zoom-in">
+            <h2>In Summary</h2>
+            <div style="background: rgba(255, 215, 0, 0.15); border-radius: 15px; padding: 25px; margin: 25px 0; font-size: 1.3em; font-style: italic; border-left: 4px solid var(--gold);" data-aos="fade-up">
+                This project revolutionizes cyber threat intelligence with a trustless, decentralized blockchain platform for anonymous IoC sharing.<br>
+                Key Outcomes: Data integrity, transparency, immutability, and global collaboration.
+            </div>
+            <p data-aos="fade-up" data-aos-delay="200">Next Steps: Prototype development, testing on Ethereum Testnet.</p>
+            <i class="fas fa-rocket icon-animate float" style="font-size: 4em; color: var(--secondary); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- Slide 14: Q&A / Thank You -->
+    <section id="slide14">
+        <div class="slide" data-aos="fade-up">
+            <h2>Questions?</h2>
+            <p data-aos="slide-up">Thank you for your time!</p>
+            <p data-aos="slide-up" data-aos-delay="200">Contact: Taha hany | tahahany112@gmail.com | +20-01010909404</p>
+            <p data-aos="slide-up" data-aos-delay="400">References: Ethereum Docs, Cybersecurity Papers (e.g., on IoC Sharing).</p>
+            <i class="fas fa-comments icon-animate pulse" style="font-size: 4em; color: var(--gold); margin-top: 20px;"></i>
+        </div>
+    </section>
+
+    <!-- AOS Animation Library Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: false,
+            offset: 100
+        });
+
+        // Create background particles
+        const bgAnimation = document.getElementById('bgAnimation');
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 6 + 2;
+            const left = Math.random() * 100;
+            const delay = Math.random() * 15;
+            const duration = Math.random() * 10 + 10;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${left}%`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            
+            bgAnimation.appendChild(particle);
+        }
+
+        // Navigation Dots
+        const sections = document.querySelectorAll('section');
+        const navDots = document.getElementById('navDots');
+        sections.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.addEventListener('click', () => scrollToSection(index));
+            navDots.appendChild(dot);
+        });
+        const dots = document.querySelectorAll('.dot');
+
+        // Update active dot on scroll
+        window.addEventListener('scroll', () => {
+            const current = getCurrentSection();
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === current);
+            });
+            updateProgress(current);
+        });
+
+        // Next/Prev Buttons
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            const current = getCurrentSection();
+            if (current < sections.length - 1) scrollToSection(current + 1);
+        });
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            const current = getCurrentSection();
+            if (current > 0) scrollToSection(current - 1);
+        });
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            const current = getCurrentSection();
+            if (e.key === 'ArrowDown' && current < sections.length - 1) {
+                scrollToSection(current + 1);
+            } else if (e.key === 'ArrowUp' && current > 0) {
+                scrollToSection(current - 1);
+            }
+        });
+
+        // Helper Functions
+        function getCurrentSection() {
+            return Math.floor(window.scrollY / window.innerHeight);
+        }
+        function scrollToSection(index) {
+            sections[index].scrollIntoView({ behavior: 'smooth' });
+        }
+        function updateProgress(current) {
+            const progress = ((current + 1) / sections.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Initial Progress
+        updateProgress(0);
+    </script>
+</body>
+</html>
